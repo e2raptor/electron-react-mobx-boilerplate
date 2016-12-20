@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain } from 'electron';
 
 let menu;
 let template;
@@ -20,7 +20,6 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-
 const installExtensions = async () => {
   if (process.env.NODE_ENV === 'development') {
     const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
@@ -37,6 +36,11 @@ const installExtensions = async () => {
     }
   }
 };
+
+ipcMain.on('open', (event, arg) => {
+    let win = new BrowserWindow({ width:420, height: 300 })
+    win.loadURL(`file://${__dirname}/app.html`)
+})
 
 app.on('ready', async () => {
   await installExtensions();
